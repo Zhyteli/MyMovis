@@ -7,4 +7,5 @@
     <string name="remove_to_favourite">Удаленно из избранного</string>
     <string name="itemMain">Галавная</string>
     <string name="itemFavourite">Избранное</string>
+    <string name="launch_trailer">Запустить трейлер</string>
 </resources>

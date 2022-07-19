@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.mymovis.R;
+import com.example.mymovis.adapters.MovieAdapter;
 import com.example.mymovis.data.FavouriteMovie;
 import com.example.mymovis.data.MainViewModel;
 import com.example.mymovis.data.Movie;
