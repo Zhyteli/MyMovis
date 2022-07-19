@@ -1,4 +1,4 @@
-package com.example.mymovis.presentation;
+package com.example.mymovis.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +25,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         movies = new ArrayList<>();
     }
 
-    interface OnPosterClickListener{
+    public interface OnPosterClickListener{
         void OnPosterClick(int position);
     }
     public void setOnPosterClickListener(OnPosterClickListener onPosterClickListener) {
         this.onPosterClickListener = onPosterClickListener;
     }
-    interface OnReachEndListener{
+    public interface OnReachEndListener{
         void onReachEnd();
     }
 
