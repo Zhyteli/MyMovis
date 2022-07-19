@@ -1,8 +1,13 @@
 package com.example.mymovis.data;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "movies")
 public class Movie {
+    @PrimaryKey
     private int id;
-    private int voteCourt;
+    private int voteCount;
     private String title;
     private String originalTitle;
     private String overview;
@@ -10,11 +15,11 @@ public class Movie {
     private String bigPosterPath;
     private String backdropPath;
     private double voteAverage;
-    private String releaseData;
+    private String releaseDate;
 
-    public Movie(int id, int voteCourt, String title, String originalTitle, String overview, String posterPath, String bigPosterPath, String backdropPath, double voteAverage, String releaseData) {
+    public Movie(int id, int voteCount, String title, String originalTitle, String overview, String posterPath, String bigPosterPath, String backdropPath, double voteAverage, String releaseDate) {
         this.id = id;
-        this.voteCourt = voteCourt;
+        this.voteCount = voteCount;
         this.title = title;
         this.originalTitle = originalTitle;
         this.overview = overview;
@@ -22,7 +27,15 @@ public class Movie {
         this.bigPosterPath = bigPosterPath;
         this.backdropPath = backdropPath;
         this.voteAverage = voteAverage;
-        this.releaseData = releaseData;
+        this.releaseDate = releaseDate;
+    }
+
+    public String getBigPosterPath() {
+        return bigPosterPath;
+    }
+
+    public void setBigPosterPath(String bigPosterPath) {
+        this.bigPosterPath = bigPosterPath;
     }
 
     public int getId() {
@@ -33,12 +46,12 @@ public class Movie {
         this.id = id;
     }
 
-    public int getVoteCourt() {
-        return voteCourt;
+    public int getVoteCount() {
+        return voteCount;
     }
 
-    public void setVoteCourt(int voteCourt) {
-        this.voteCourt = voteCourt;
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
     }
 
     public String getTitle() {
@@ -89,19 +102,12 @@ public class Movie {
         this.voteAverage = voteAverage;
     }
 
-    public String getReleaseData() {
-        return releaseData;
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setReleaseData(String releaseData) {
-        this.releaseData = releaseData;
-    }
-
-    public String getBigPosterPath() {
-        return bigPosterPath;
-    }
-
-    public void setBigPosterPath(String bigPosterPath) {
-        this.bigPosterPath = bigPosterPath;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 }
+
