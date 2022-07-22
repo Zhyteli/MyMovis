@@ -33,6 +33,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -45,6 +46,7 @@ public class DetailActivity extends AppCompatActivity {
     private RecyclerView recyclerViewTrailers, recyclerViewReviews;
     private ReviewAdapter reviewAdapter;
     private TrailerAdapter trailerAdapter;
+    private static String lang;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,7 +85,7 @@ public class DetailActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         movie = viewModel.getMovieById(id);
-        Picasso.get().load(movie.getBigPosterPath()).into(imageViewBigPoster);
+        Picasso.get().load(movie.getBigPosterPath()).placeholder(android.R.drawable.progress_indeterminate_horizontal).into(imageViewBigPoster);
         textViewTitle.setText(movie.getTitle());
         textViewOriginalTitle.setText(movie.getOriginalTitle());
         textViewReleaseDate.setText(movie.getReleaseDate());
@@ -117,8 +119,8 @@ public class DetailActivity extends AppCompatActivity {
         recyclerViewReviews.setAdapter(reviewAdapter);
         recyclerViewTrailers.setAdapter(trailerAdapter);
 
-        JSONObject jsonObjectTrailers = NetworkUtils.getJSONForVideos(movie.getId());
-        JSONObject jsonObjectReviews = NetworkUtils.getJSONForReviews(movie.getId());
+        JSONObject jsonObjectTrailers = NetworkUtils.getJSONForVideos(movie.getId(), lang);
+        JSONObject jsonObjectReviews = NetworkUtils.getJSONForReviews(movie.getId(), lang);
         ArrayList<Trailer> trailers = JSONUtils.getTrailerFromJSON(jsonObjectTrailers);
         ArrayList<Review> reviews = JSONUtils.getReviewsFromJSON(jsonObjectReviews);
 
@@ -134,6 +136,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
     private void init(){
+        lang = Locale.getDefault().getLanguage();
         imageViewBigPoster = findViewById(R.id.imageViewBigPoster);
         textViewTitle = findViewById(R.id.textViewTitle);
         textViewOriginalTitle = findViewById(R.id.textViewOriginalTitle);
