@@ -1,22 +1,49 @@
-package com.example.mymovis.data;
+package com.example.mymovis.data.pojo;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 @Entity(tableName = "movies")
 public class Movie {
     @PrimaryKey(autoGenerate = true)
     private int uniqueId;
+    @SerializedName("adult")
+    @Expose
+    private boolean adult;
+    @SerializedName("id")
+    @Expose
     private int id;
+    @SerializedName("vote_count")
+    @Expose
     private int voteCount;
+    @SerializedName("title")
+    @Expose
     private String title;
+    @SerializedName("original_title")
+    @Expose
     private String originalTitle;
+    @SerializedName("overview")
+    @Expose
     private String overview;
+    @SerializedName("popularity")
+    @Expose
+    private double popularity;
+    @SerializedName("poster_path")
+    @Expose
     private String posterPath;
     private String bigPosterPath;
+    @SerializedName("backdrop_path")
+    @Expose
     private String backdropPath;
+    @SerializedName("vote_average")
+    @Expose
     private double voteAverage;
+    @SerializedName("release_date")
+    @Expose
     private String releaseDate;
 
     public Movie(int uniqueId, int id, int voteCount, String title, String originalTitle, String overview, String posterPath, String bigPosterPath, String backdropPath, double voteAverage, String releaseDate) {
@@ -44,6 +71,22 @@ public class Movie {
         this.backdropPath = backdropPath;
         this.voteAverage = voteAverage;
         this.releaseDate = releaseDate;
+    }
+
+    public boolean isAdult() {
+        return adult;
+    }
+
+    public void setAdult(boolean adult) {
+        this.adult = adult;
+    }
+
+    public double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
     }
 
     public int getUniqueId() {

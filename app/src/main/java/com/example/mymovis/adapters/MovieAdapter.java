@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymovis.R;
-import com.example.mymovis.data.Movie;
+import com.example.mymovis.data.pojo.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

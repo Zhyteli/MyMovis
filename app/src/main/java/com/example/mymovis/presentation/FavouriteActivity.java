@@ -18,7 +18,7 @@ import com.example.mymovis.R;
 import com.example.mymovis.adapters.MovieAdapter;
 import com.example.mymovis.data.FavouriteMovie;
 import com.example.mymovis.data.MainViewModel;
-import com.example.mymovis.data.Movie;
+import com.example.mymovis.data.pojo.Movie;
 
 import java.util.ArrayList;
 import java.util.List;

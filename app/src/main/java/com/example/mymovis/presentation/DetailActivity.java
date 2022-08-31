@@ -2,7 +2,6 @@ package com.example.mymovis.presentation;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +22,7 @@ import com.example.mymovis.adapters.ReviewAdapter;
 import com.example.mymovis.adapters.TrailerAdapter;
 import com.example.mymovis.data.FavouriteMovie;
 import com.example.mymovis.data.MainViewModel;
-import com.example.mymovis.data.Movie;
+import com.example.mymovis.data.pojo.Movie;
 import com.example.mymovis.data.Review;
 import com.example.mymovis.data.Trailer;
 import com.example.mymovis.utils.JSONUtils;

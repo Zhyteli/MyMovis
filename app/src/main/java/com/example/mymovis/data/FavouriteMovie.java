@@ -3,6 +3,8 @@ package com.example.mymovis.data;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 
+import com.example.mymovis.data.pojo.Movie;
+
 @Entity(tableName = "favourite_movies")
 public class FavouriteMovie extends Movie {
     public FavouriteMovie(int uniqueId,int id, int voteCount, String title, String originalTitle, String overview, String posterPath, String bigPosterPath, String backdropPath, double voteAverage, String releaseDate) {

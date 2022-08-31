@@ -1,6 +1,6 @@
 package com.example.mymovis.utils;
 
-import com.example.mymovis.data.Movie;
+import com.example.mymovis.data.pojo.Movie;
 import com.example.mymovis.data.Review;
 import com.example.mymovis.data.Trailer;
 

@@ -20,12 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mymovis.R;
 import com.example.mymovis.adapters.MovieAdapter;
 import com.example.mymovis.data.MainViewModel;
-import com.example.mymovis.data.Movie;
+import com.example.mymovis.data.pojo.Movie;
 import com.example.mymovis.utils.JSONUtils;
 import com.example.mymovis.utils.NetworkUtils;
 import com.google.android.material.switchmaterial.SwitchMaterial;

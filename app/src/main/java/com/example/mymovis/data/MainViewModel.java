@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.mymovis.data.pojo.Movie;
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
