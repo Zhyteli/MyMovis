@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase;
 import com.example.mymovis.data.pojo.Movie;
 
 
-@Database(entities = {Movie.class, FavouriteMovie.class}, version = 3, exportSchema = false)
+@Database(entities = {Movie.class, FavouriteMovie.class}, version = 5, exportSchema = false)
 public abstract class MovieDatabase extends RoomDatabase {
 
     private static final String DB_NAME = "movies.db";

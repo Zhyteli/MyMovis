@@ -1,13 +1,19 @@
 package com.example.mymovis.data.pojo;
 
+import static com.example.mymovis.data.api.ApiFactory.SMALL_POSTER_SIZE;
+import static com.example.mymovis.data.api.ApiFactory.BASE_POSTER_URL;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import com.example.mymovis.data.converters.Converter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "movies")
+@TypeConverters(value = Converter.class)
 public class Movie {
     @PrimaryKey(autoGenerate = true)
     private int uniqueId;
@@ -146,7 +152,7 @@ public class Movie {
     }
 
     public String getPosterPath() {
-        return posterPath;
+        return BASE_POSTER_URL + SMALL_POSTER_SIZE + posterPath;
     }
 
     public void setPosterPath(String posterPath) {

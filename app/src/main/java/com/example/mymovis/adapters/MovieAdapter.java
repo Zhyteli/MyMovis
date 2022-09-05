@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymovis.R;
 import com.example.mymovis.data.pojo.Movie;
+import com.example.mymovis.presentation.MainActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private List<Movie> movies;
     private OnPosterClickListener onPosterClickListener;
     private OnReachEndListener onReachEndListener;
+    private onStartLoadingListener onStartLoadingListener;
 
     public MovieAdapter(){
         movies = new ArrayList<>();
@@ -28,12 +30,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public interface OnPosterClickListener{
         void OnPosterClick(int position);
     }
-    public void setOnPosterClickListener(OnPosterClickListener onPosterClickListener) {
-        this.onPosterClickListener = onPosterClickListener;
-    }
     public interface OnReachEndListener{
         void onReachEnd();
     }
+    public interface onStartLoadingListener{
+        void onStartLoading();
+    }
+
+    public void setOnStartLoadingListener(onStartLoadingListener onStartLoadingListener) {
+        this.onStartLoadingListener = onStartLoadingListener;
+    }
+    public void setOnPosterClickListener(OnPosterClickListener onPosterClickListener) {
+        this.onPosterClickListener = onPosterClickListener;
+    }
+
 
     public void setOnReachEndListener(OnReachEndListener onReachEndListener) {
         this.onReachEndListener = onReachEndListener;
@@ -52,8 +62,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             onReachEndListener.onReachEnd();
         }
         Movie movie = movies.get(position);
-        ImageView imageView = holder.imageViewSmallPoster;
-        Picasso.get().load(movie.getPosterPath()).into(imageView);
+        Picasso.get().load(movie.getPosterPath()).into(holder.imageViewSmallPoster);
     }
 
     @Override

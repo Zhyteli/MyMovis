@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.example.mymovis.data.pojo.Movie;
@@ -27,8 +28,8 @@ public interface MovieDao {
     @Query("DELETE FROM movies")
     void deleteAllMovies();
 
-    @Insert
-    void insertMovie(Movie movie);
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertMovie(List<Movie> movies);
 
     @Delete
     void deleteMovie(Movie movie);
