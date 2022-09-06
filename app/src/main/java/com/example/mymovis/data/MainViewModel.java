@@ -71,12 +71,8 @@ public class MainViewModel extends AndroidViewModel {
                 .subscribe(new Consumer<MovieResponse>() {
                     @Override
                     public void accept(MovieResponse movieResponse) throws Exception {
-                        try {
-                            insertMovie(movieResponse.getMovies());
-                            Log.d("accept", Integer.toString(page));
-                        }catch (Exception e){
-                            Log.d("ConsumerMovieResponse", String.valueOf(e));
-                        }
+                        insertMovie(movieResponse.getMovies());
+                        Log.d("accept", Integer.toString(page));
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -86,10 +82,12 @@ public class MainViewModel extends AndroidViewModel {
                 });
         compositeDisposable.add(disposable);
     }
-    public void nextPage(String mLang, String mSort, int mPage){
-        loadData(mLang,mSort,mPage);
+
+    public void nextPage(String mLang, String mSort, int mPage) {
+        loadData(mLang, mSort, mPage);
         Log.d("nextPage", Integer.toString(mPage));
     }
+
     public Movie getMovieById(int id) {
         try {
             return new GetMovieTask().execute(id).get();
@@ -209,9 +207,10 @@ public class MainViewModel extends AndroidViewModel {
             return null;
         }
     }
+
     @Override
     protected void onCleared() {
-        if (compositeDisposable != null){
+        if (compositeDisposable != null) {
             compositeDisposable.dispose();
         }
         super.onCleared();

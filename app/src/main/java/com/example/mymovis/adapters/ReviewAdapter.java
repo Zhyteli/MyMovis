@@ -12,10 +12,11 @@ import com.example.mymovis.R;
 import com.example.mymovis.data.pojo.Review;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
-    private ArrayList<Review> reviews;
+    private List<Review> reviews;
 
 
     @NonNull
@@ -37,7 +38,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         return reviews.size();
     }
 
-    public void setReviews(ArrayList<Review> reviews) {
+    public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
         notifyDataSetChanged();
     }

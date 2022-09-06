@@ -27,6 +27,7 @@ import com.example.mymovis.adapters.TrailerAdapter;
 import com.example.mymovis.data.DetailViewModel;
 import com.example.mymovis.data.FavouriteMovie;
 import com.example.mymovis.data.MainViewModel;
+import com.example.mymovis.data.pojo.Review;
 import com.example.mymovis.data.pojo.Trailer;
 import com.example.mymovis.data.api.ApiFactoryVideo;
 import com.example.mymovis.data.api.ApiService;
@@ -107,36 +108,36 @@ public class DetailActivity extends AppCompatActivity {
         textViewRating.setText(Double.toString(movie.getVoteAverage()));
         setFavourite();
 
-        imageViewAddToFavourite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (favouriteMovie == null) {
-                    viewModel.insertFavouriteMovie(new FavouriteMovie(movie));
-                    Toast.makeText(DetailActivity.this, R.string.add_to_favourite, Toast.LENGTH_SHORT).show();
-                } else {
-                    viewModel.deleteFavouriteMovie(favouriteMovie);
-                    Toast.makeText(DetailActivity.this, R.string.remove_to_favourite, Toast.LENGTH_SHORT).show();
-                }
-                setFavourite();
+        imageViewAddToFavourite.setOnClickListener(view -> {
+            if (favouriteMovie == null) {
+                viewModel.insertFavouriteMovie(new FavouriteMovie(movie));
+                Intent i = new Intent(DetailActivity.this, FavouriteActivity.class);
+                startActivity(i);
+                Toast.makeText(DetailActivity.this, R.string.add_to_favourite, Toast.LENGTH_SHORT).show();
+            } else {
+                viewModel.deleteFavouriteMovie(favouriteMovie);
+                Intent i = new Intent(DetailActivity.this, FavouriteActivity.class);
+                startActivity(i);
+                Toast.makeText(DetailActivity.this, R.string.remove_to_favourite, Toast.LENGTH_SHORT).show();
             }
+            setFavourite();
         });
-        trailerAdapter.setOnTrailerClickListener(new TrailerAdapter.OnTrailerClickListener() {
-            @Override
-            public void onTrailerClick(String url) {
-                Intent intentTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intentTrailer);
-            }
+        trailerAdapter.setOnTrailerClickListener(url -> {
+            Intent intentTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intentTrailer);
         });
 
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerViewReviews.setAdapter(reviewAdapter);
+        recyclerViewReviews.setAdapter(reviewAdapter);
         recyclerViewTrailers.setAdapter(trailerAdapter);
 
         viewModelDet.loadTrailer(Integer.toString(movie.getId()), lang, trailerAdapter);
+        viewModelDet.loadReview(Integer.toString(movie.getId()), "en-US", reviewAdapter);
 
         ArrayList<Trailer> trailers = new ArrayList<>();
-//        reviewAdapter.setReviews(reviews);
+        ArrayList<Review> reviews = new ArrayList<>();
+        reviewAdapter.setReviews(reviews);
         trailerAdapter.setTrailers(trailers);
 
     }

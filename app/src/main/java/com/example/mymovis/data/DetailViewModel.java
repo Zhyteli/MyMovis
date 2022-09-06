@@ -8,12 +8,14 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.mymovis.adapters.ReviewAdapter;
 import com.example.mymovis.adapters.TrailerAdapter;
 import com.example.mymovis.data.api.ApiFactory;
 import com.example.mymovis.data.api.ApiFactoryVideo;
 import com.example.mymovis.data.api.ApiService;
 import com.example.mymovis.data.pojo.Movie;
 import com.example.mymovis.data.pojo.MovieResponse;
+import com.example.mymovis.data.pojo.ReviewResponse;
 import com.example.mymovis.data.pojo.Trailer;
 import com.example.mymovis.data.pojo.TrailerResponse;
 import com.example.mymovis.presentation.DetailActivity;
@@ -34,6 +36,7 @@ public class DetailViewModel extends AndroidViewModel {
     public DetailViewModel(@NonNull Application application) {
         super(application);
     }
+
     public void loadTrailer(String id, String lang, TrailerAdapter trailerAdapter) {
         ApiFactoryVideo apiFactoryVideo = ApiFactoryVideo.getInstanceVideo();
         ApiService apiService = apiFactoryVideo.getApiServiceVideo();
@@ -58,6 +61,32 @@ public class DetailViewModel extends AndroidViewModel {
                 });
         compositeDisposable.add(disposable);
     }
+
+    public void loadReview(String id, String lang, ReviewAdapter reviewAdapter) {
+        ApiFactoryVideo apiFactoryVideo = ApiFactoryVideo.getInstanceVideo();
+        ApiService apiService = apiFactoryVideo.getApiServiceVideo();
+        compositeDisposable = new CompositeDisposable();
+        Disposable disposable = apiService.getMovieReview(
+                        id,
+                        "32f91e104228c0c9ff3630899838e82e",
+                        lang
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ReviewResponse>() {
+                    @Override
+                    public void accept(ReviewResponse reviewResponse) throws Exception {
+                        reviewAdapter.setReviews(reviewResponse.getReviews());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.d("trailer", throwable.toString());
+                    }
+                });
+        compositeDisposable.add(disposable);
+    }
+
     @Override
     protected void onCleared() {
         if (compositeDisposable != null){

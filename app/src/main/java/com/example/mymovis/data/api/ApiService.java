@@ -1,5 +1,7 @@
 package com.example.mymovis.data.api;
 
+import com.example.mymovis.data.pojo.Review;
+import com.example.mymovis.data.pojo.ReviewResponse;
 import com.example.mymovis.data.pojo.Trailer;
 import com.example.mymovis.data.pojo.MovieResponse;
 import com.example.mymovis.data.pojo.TrailerResponse;
@@ -25,5 +27,10 @@ public interface ApiService {
             @Query("api_key") String apiKey,
             @Query("language") String language
     );
-
+    @GET("movie/{id}/reviews")
+    Observable<ReviewResponse> getMovieReview(
+            @Path("id") String id,
+            @Query("api_key") String apiKey,
+            @Query("language") String language
+    );
 }
