@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymovis.R;
-import com.example.mymovis.data.Trailer;
+import com.example.mymovis.data.pojo.Trailer;
 
 import java.util.ArrayList;
 
@@ -17,6 +17,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     private ArrayList<Trailer> trailers;
     private OnTrailerClickListener onTrailerClickListener;
+
+    public TrailerAdapter(){
+        trailers = new ArrayList<>();
+    }
 
     @NonNull
     @Override

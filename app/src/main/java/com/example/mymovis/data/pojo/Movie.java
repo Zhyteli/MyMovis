@@ -1,5 +1,6 @@
 package com.example.mymovis.data.pojo;
 
+import static com.example.mymovis.data.api.ApiFactory.BIG_POSTER_SIZE;
 import static com.example.mymovis.data.api.ApiFactory.SMALL_POSTER_SIZE;
 import static com.example.mymovis.data.api.ApiFactory.BASE_POSTER_URL;
 
@@ -104,7 +105,7 @@ public class Movie {
     }
 
     public String getBigPosterPath() {
-        return bigPosterPath;
+        return BASE_POSTER_URL + BIG_POSTER_SIZE + posterPath;
     }
 
     public void setBigPosterPath(String bigPosterPath) {

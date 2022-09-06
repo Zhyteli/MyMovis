@@ -71,8 +71,12 @@ public class MainViewModel extends AndroidViewModel {
                 .subscribe(new Consumer<MovieResponse>() {
                     @Override
                     public void accept(MovieResponse movieResponse) throws Exception {
-                        insertMovie(movieResponse.getMovies());
-                        Log.d("accept", Integer.toString(page));
+                        try {
+                            insertMovie(movieResponse.getMovies());
+                            Log.d("accept", Integer.toString(page));
+                        }catch (Exception e){
+                            Log.d("ConsumerMovieResponse", String.valueOf(e));
+                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -207,7 +211,9 @@ public class MainViewModel extends AndroidViewModel {
     }
     @Override
     protected void onCleared() {
-        compositeDisposable.dispose();
+        if (compositeDisposable != null){
+            compositeDisposable.dispose();
+        }
         super.onCleared();
     }
 }

@@ -1,15 +1,5 @@
 package com.example.mymovis.utils;
 
-import com.example.mymovis.data.pojo.Movie;
-import com.example.mymovis.data.Review;
-import com.example.mymovis.data.Trailer;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
 public class JSONUtils {
 
 //    private static final String KEY_RESULTS = "results";

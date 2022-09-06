@@ -1,7 +1,10 @@
 package com.example.mymovis.presentation;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,21 +24,32 @@ import android.widget.Toast;
 import com.example.mymovis.R;
 import com.example.mymovis.adapters.ReviewAdapter;
 import com.example.mymovis.adapters.TrailerAdapter;
+import com.example.mymovis.data.DetailViewModel;
 import com.example.mymovis.data.FavouriteMovie;
 import com.example.mymovis.data.MainViewModel;
+import com.example.mymovis.data.pojo.Trailer;
+import com.example.mymovis.data.api.ApiFactoryVideo;
+import com.example.mymovis.data.api.ApiService;
 import com.example.mymovis.data.pojo.Movie;
 
+import com.example.mymovis.data.pojo.TrailerResponse;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class DetailActivity extends AppCompatActivity {
 
     private ImageView imageViewBigPoster, imageViewAddToFavourite;
-    private TextView textViewTitle,textViewOriginalTitle,textViewRating,textViewReleaseDate,textViewOverview;
+    private TextView textViewTitle, textViewOriginalTitle, textViewRating, textViewReleaseDate, textViewOverview;
     private int id;
     private MainViewModel viewModel;
     private Movie movie;
@@ -43,6 +58,10 @@ public class DetailActivity extends AppCompatActivity {
     private ReviewAdapter reviewAdapter;
     private TrailerAdapter trailerAdapter;
     private static String lang;
+    public static String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v=";
+    public static final String KEY_KEY_OF_VIDEO = "key";
+    public static final String KEY_NAME = "name";
+    private DetailViewModel viewModelDet;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,7 +73,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.itemMain:
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
@@ -66,20 +85,19 @@ public class DetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
         init();
         Intent intent = getIntent();
-        if(intent != null && intent.hasExtra("id")){
+        if (intent != null && intent.hasExtra("id")) {
             id = intent.getIntExtra("id", -1);
-            }else {
+        } else {
             finish();
         }
 
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         movie = viewModel.getMovieById(id);
         Picasso.get().load(movie.getBigPosterPath()).placeholder(android.R.drawable.progress_indeterminate_horizontal).into(imageViewBigPoster);
         textViewTitle.setText(movie.getTitle());
@@ -92,10 +110,10 @@ public class DetailActivity extends AppCompatActivity {
         imageViewAddToFavourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (favouriteMovie == null){
+                if (favouriteMovie == null) {
                     viewModel.insertFavouriteMovie(new FavouriteMovie(movie));
                     Toast.makeText(DetailActivity.this, R.string.add_to_favourite, Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     viewModel.deleteFavouriteMovie(favouriteMovie);
                     Toast.makeText(DetailActivity.this, R.string.remove_to_favourite, Toast.LENGTH_SHORT).show();
                 }
@@ -112,26 +130,29 @@ public class DetailActivity extends AppCompatActivity {
 
         recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTrailers.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewReviews.setAdapter(reviewAdapter);
+//        recyclerViewReviews.setAdapter(reviewAdapter);
         recyclerViewTrailers.setAdapter(trailerAdapter);
 
-//        JSONObject jsonObjectTrailers = NetworkUtils.getJSONForVideos(movie.getId(), lang);
-//        JSONObject jsonObjectReviews = NetworkUtils.getJSONForReviews(movie.getId(), lang);
-//        ArrayList<Trailer> trailers = JSONUtils.getTrailerFromJSON(jsonObjectTrailers);
-//        ArrayList<Review> reviews = JSONUtils.getReviewsFromJSON(jsonObjectReviews);
+        viewModelDet.loadTrailer(Integer.toString(movie.getId()), lang, trailerAdapter);
 
+        ArrayList<Trailer> trailers = new ArrayList<>();
 //        reviewAdapter.setReviews(reviews);
-//        trailerAdapter.setTrailers(trailers);
+        trailerAdapter.setTrailers(trailers);
+
     }
-    private void setFavourite(){
+
+    private void setFavourite() {
         favouriteMovie = viewModel.getFavouriteMovieById(id);
-        if (favouriteMovie == null){
+        if (favouriteMovie == null) {
             imageViewAddToFavourite.setImageResource(R.drawable.favourite_add_to);
-        }else {
+        } else {
             imageViewAddToFavourite.setImageResource(R.drawable.favourite_remove);
         }
     }
-    private void init(){
+
+    private void init() {
+        viewModelDet = new ViewModelProvider(this).get(DetailViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         lang = Locale.getDefault().getLanguage();
         imageViewBigPoster = findViewById(R.id.imageViewBigPoster);
         textViewTitle = findViewById(R.id.textViewTitle);

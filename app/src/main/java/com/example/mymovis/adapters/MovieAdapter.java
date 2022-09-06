@@ -21,7 +21,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private List<Movie> movies;
     private OnPosterClickListener onPosterClickListener;
     private OnReachEndListener onReachEndListener;
-    private onStartLoadingListener onStartLoadingListener;
 
     public MovieAdapter(){
         movies = new ArrayList<>();
@@ -33,18 +32,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public interface OnReachEndListener{
         void onReachEnd();
     }
-    public interface onStartLoadingListener{
-        void onStartLoading();
-    }
-
-    public void setOnStartLoadingListener(onStartLoadingListener onStartLoadingListener) {
-        this.onStartLoadingListener = onStartLoadingListener;
-    }
     public void setOnPosterClickListener(OnPosterClickListener onPosterClickListener) {
         this.onPosterClickListener = onPosterClickListener;
     }
-
-
     public void setOnReachEndListener(OnReachEndListener onReachEndListener) {
         this.onReachEndListener = onReachEndListener;
     }

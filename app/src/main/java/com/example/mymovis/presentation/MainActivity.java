@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
             Movie movie = movieAdapter.getMovies().get(position);
             Intent intent = new Intent(MainActivity.this, DetailActivity.class);
             intent.putExtra("id", movie.getId());
-            Log.d("id", Integer.toString(movie.getId()));
+            Log.d("idIN", Integer.toString(movie.getId()));
             startActivity(intent);
         });
         recyclerViewPosters.addOnScrollListener(new RecyclerView.OnScrollListener() {
