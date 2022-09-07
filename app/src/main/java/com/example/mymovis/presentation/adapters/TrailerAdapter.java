@@ -1,4 +1,4 @@
-package com.example.mymovis.adapters;
+package com.example.mymovis.presentation.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymovis.R;
-import com.example.mymovis.data.Trailer;
+import com.example.mymovis.domain.Trailer;
 
 import java.util.ArrayList;
 
@@ -17,6 +17,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     private ArrayList<Trailer> trailers;
     private OnTrailerClickListener onTrailerClickListener;
+
+    public TrailerAdapter(){
+        trailers = new ArrayList<>();
+    }
 
     @NonNull
     @Override
@@ -47,12 +51,9 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         public TrailerViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewNameOfVideo = itemView.findViewById(R.id.textViewNameOfVideo);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onTrailerClickListener != null) {
-                        onTrailerClickListener.onTrailerClick(trailers.get(getAdapterPosition()).getKey());
-                    }
+            itemView.setOnClickListener(v -> {
+                if (onTrailerClickListener != null) {
+                    onTrailerClickListener.onTrailerClick(trailers.get(getAdapterPosition()).getKey());
                 }
             });
         }

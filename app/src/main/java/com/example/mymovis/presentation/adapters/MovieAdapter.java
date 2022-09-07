@@ -1,4 +1,4 @@
-package com.example.mymovis.adapters;
+package com.example.mymovis.presentation.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymovis.R;
-import com.example.mymovis.data.Movie;
+import com.example.mymovis.domain.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,6 +20,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private List<Movie> movies;
     private OnPosterClickListener onPosterClickListener;
     private OnReachEndListener onReachEndListener;
+    private static final String SMALL_POSTER_SIZE = "w185";
+    private static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p/";
 
     public MovieAdapter(){
         movies = new ArrayList<>();
@@ -28,13 +30,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public interface OnPosterClickListener{
         void OnPosterClick(int position);
     }
-    public void setOnPosterClickListener(OnPosterClickListener onPosterClickListener) {
-        this.onPosterClickListener = onPosterClickListener;
-    }
     public interface OnReachEndListener{
         void onReachEnd();
     }
-
+    public void setOnPosterClickListener(OnPosterClickListener onPosterClickListener) {
+        this.onPosterClickListener = onPosterClickListener;
+    }
     public void setOnReachEndListener(OnReachEndListener onReachEndListener) {
         this.onReachEndListener = onReachEndListener;
     }
@@ -52,8 +53,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             onReachEndListener.onReachEnd();
         }
         Movie movie = movies.get(position);
-        ImageView imageView = holder.imageViewSmallPoster;
-        Picasso.get().load(movie.getPosterPath()).into(imageView);
+        Picasso.get().load(BASE_POSTER_URL + SMALL_POSTER_SIZE + movie.getPosterPath()).into(holder.imageViewSmallPoster);
     }
 
     @Override
@@ -68,12 +68,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             imageViewSmallPoster = itemView.findViewById(R.id.imageViewSmallPoster);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(onPosterClickListener != null){
-                        onPosterClickListener.OnPosterClick(getAdapterPosition());
-                    }
+            itemView.setOnClickListener(view -> {
+                if(onPosterClickListener != null){
+                    onPosterClickListener.OnPosterClick(getAdapterPosition());
                 }
             });
         }

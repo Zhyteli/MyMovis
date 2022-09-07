@@ -1,35 +1,80 @@
-package com.example.mymovis.data;
+package com.example.mymovis.data.viewmodels;
 
 import android.app.Application;
 import android.os.AsyncTask;
+import android.util.Log;
 
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import com.example.mymovis.data.MovieDatabase;
+import com.example.mymovis.data.api.ApiFactory;
+import com.example.mymovis.data.api.ApiService;
+import com.example.mymovis.domain.Movie;
+import com.example.mymovis.data.pojo.MovieResponse;
+import com.example.mymovis.domain.FavouriteMovie;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 public class MainViewModel extends AndroidViewModel {
 
     private static MovieDatabase database;
-    private LiveData<List<Movie>> movies;
-    private LiveData<List<FavouriteMovie>> favouriteMovies;
+    private final LiveData<List<Movie>> movies;
+    private final LiveData<List<FavouriteMovie>> favouriteMovies;
+    private MutableLiveData<Throwable> errors;
+
+    private CompositeDisposable compositeDisposable;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
         database = MovieDatabase.getInstance(getApplication());
         movies = database.movieDao().getAllMovies();
         favouriteMovies = database.movieDao().getAllFavouriteMovies();
+        errors = new MutableLiveData<>();
+    }
+
+    public LiveData<Throwable> getErrors() {
+        return errors;
+    }
+
+    public void clearErrors() {
+        errors.setValue(null);
+    }
+
+    public void loadData(String lang, String sort, int page) {
+        ApiFactory apiFactory = ApiFactory.getInstance();
+        ApiService apiService = apiFactory.getApiService();
+        compositeDisposable = new CompositeDisposable();
+        String key = "32f91e104228c0c9ff3630899838e82e";
+        String minVoteCountValue = "1000";
+        Disposable disposable = apiService.getMovieResponse(key, lang, sort, minVoteCountValue, Integer.toString(page))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        movieResponse -> insertMovie(movieResponse.getMovies()),
+                        throwable -> errors.setValue(throwable)
+                );
+        compositeDisposable.add(disposable);
+    }
+
+    public void nextPage(String mLang, String mSort, int mPage) {
+        loadData(mLang, mSort, mPage);
     }
 
     public Movie getMovieById(int id) {
         try {
             return new GetMovieTask().execute(id).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
@@ -38,9 +83,7 @@ public class MainViewModel extends AndroidViewModel {
     public FavouriteMovie getFavouriteMovieById(int id) {
         try {
             return new GetFavouriteMovieTask().execute(id).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
@@ -54,7 +97,8 @@ public class MainViewModel extends AndroidViewModel {
         new DeleteMoviesTask().execute();
     }
 
-    public void insertMovie(Movie movie) {
+    @SuppressWarnings("unchecked")
+    public void insertMovie(List<Movie> movie) {
         new InsertTask().execute(movie);
     }
 
@@ -83,7 +127,6 @@ public class MainViewModel extends AndroidViewModel {
             return null;
         }
     }
-
     private static class InsertFavouriteTask extends AsyncTask<FavouriteMovie, Void, Void> {
         @Override
         protected Void doInBackground(FavouriteMovie... movies) {
@@ -104,9 +147,9 @@ public class MainViewModel extends AndroidViewModel {
         }
     }
 
-    private static class InsertTask extends AsyncTask<Movie, Void, Void> {
+    private static class InsertTask extends AsyncTask<List<Movie>, Void, Void> {
         @Override
-        protected Void doInBackground(Movie... movies) {
+        protected Void doInBackground(List<Movie>... movies) {
             if (movies != null && movies.length > 0) {
                 database.movieDao().insertMovie(movies[0]);
             }
@@ -140,5 +183,13 @@ public class MainViewModel extends AndroidViewModel {
             }
             return null;
         }
+    }
+
+    @Override
+    protected void onCleared() {
+        if (compositeDisposable != null) {
+            compositeDisposable.dispose();
+        }
+        super.onCleared();
     }
 }
