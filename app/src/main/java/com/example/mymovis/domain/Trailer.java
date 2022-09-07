@@ -1,8 +1,7 @@
-package com.example.mymovis.data.pojo;
+package com.example.mymovis.domain;
 
-import static com.example.mymovis.presentation.DetailActivity.BASE_YOUTUBE_URL;
-import static com.example.mymovis.presentation.DetailActivity.KEY_KEY_OF_VIDEO;
-import static com.example.mymovis.presentation.DetailActivity.KEY_NAME;
+import static com.example.mymovis.presentation.activity.DetailActivity.BASE_YOUTUBE_URL;
+import static com.example.mymovis.presentation.activity.DetailActivity.KEY_NAME;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -26,7 +25,7 @@ public class Trailer {
     }
 
     public String getName() {
-        return KEY_NAME + name;
+        return name;
     }
 
     public void setName(String name) {

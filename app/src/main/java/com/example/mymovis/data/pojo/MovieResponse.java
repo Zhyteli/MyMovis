@@ -1,5 +1,6 @@
 package com.example.mymovis.data.pojo;
 
+import com.example.mymovis.domain.Movie;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

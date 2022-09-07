@@ -1,4 +1,4 @@
-package com.example.mymovis.adapters;
+package com.example.mymovis.presentation.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,15 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymovis.R;
-import com.example.mymovis.data.pojo.Review;
+import com.example.mymovis.domain.Review;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
     private List<Review> reviews;
-
 
     @NonNull
     @Override

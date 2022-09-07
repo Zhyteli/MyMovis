@@ -1,71 +1,59 @@
-package com.example.mymovis.presentation;
-
-import static com.example.mymovis.data.api.ApiFactory.BASE_POSTER_URL;
-import static com.example.mymovis.data.api.ApiFactory.BIG_POSTER_SIZE;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.example.mymovis.presentation.activity;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mymovis.R;
-import com.example.mymovis.adapters.ReviewAdapter;
-import com.example.mymovis.adapters.TrailerAdapter;
-import com.example.mymovis.data.DetailViewModel;
-import com.example.mymovis.data.FavouriteMovie;
-import com.example.mymovis.data.MainViewModel;
-import com.example.mymovis.data.pojo.Review;
-import com.example.mymovis.data.pojo.Trailer;
-import com.example.mymovis.data.api.ApiFactoryVideo;
-import com.example.mymovis.data.api.ApiService;
-import com.example.mymovis.data.pojo.Movie;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mymovis.data.pojo.TrailerResponse;
+import com.example.mymovis.R;
+import com.example.mymovis.data.viewmodels.DetailViewModel;
+import com.example.mymovis.data.viewmodels.MainViewModel;
+import com.example.mymovis.domain.FavouriteMovie;
+import com.example.mymovis.domain.Movie;
+import com.example.mymovis.domain.Review;
+import com.example.mymovis.domain.Trailer;
+import com.example.mymovis.presentation.adapters.ReviewAdapter;
+import com.example.mymovis.presentation.adapters.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class DetailActivity extends AppCompatActivity {
 
     private ImageView imageViewBigPoster, imageViewAddToFavourite;
     private TextView textViewTitle, textViewOriginalTitle, textViewRating, textViewReleaseDate, textViewOverview;
-    private int id;
+
     private MainViewModel viewModel;
+    private DetailViewModel viewModelDet;
+
     private Movie movie;
     private FavouriteMovie favouriteMovie;
+
     private RecyclerView recyclerViewTrailers, recyclerViewReviews;
     private ReviewAdapter reviewAdapter;
     private TrailerAdapter trailerAdapter;
+
     private static String lang;
-    public static String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v=";
-    public static final String KEY_KEY_OF_VIDEO = "key";
+    private static String langReview = "en-US";
+    private int id;
+
     public static final String KEY_NAME = "name";
-    private DetailViewModel viewModelDet;
+    public static String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?v=";
+
+    private static final String BASE_POSTER_URL = "https://image.tmdb.org/t/p/";
+    private static final String BIG_POSTER_SIZE = "w780";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -103,7 +91,9 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         movie = viewModel.getMovieById(id);
-        Picasso.get().load(BASE_POSTER_URL + BIG_POSTER_SIZE + movie.getPosterPath()).placeholder(android.R.drawable.progress_indeterminate_horizontal).into(imageViewBigPoster);
+        Picasso.get().load(BASE_POSTER_URL + BIG_POSTER_SIZE + movie.getPosterPath())
+                .placeholder(android.R.drawable.progress_indeterminate_horizontal)
+                .into(imageViewBigPoster);
         textViewTitle.setText(movie.getTitle());
         textViewOriginalTitle.setText(movie.getOriginalTitle());
         textViewReleaseDate.setText(movie.getReleaseDate());
@@ -114,17 +104,14 @@ public class DetailActivity extends AppCompatActivity {
         imageViewAddToFavourite.setOnClickListener(view -> {
             if (favouriteMovie == null) {
                 viewModel.insertFavouriteMovie(new FavouriteMovie(movie));
-                Intent i = new Intent(DetailActivity.this, FavouriteActivity.class);
-                startActivity(i);
                 Toast.makeText(DetailActivity.this, R.string.add_to_favourite, Toast.LENGTH_SHORT).show();
             } else {
                 viewModel.deleteFavouriteMovie(favouriteMovie);
-                Intent i = new Intent(DetailActivity.this, FavouriteActivity.class);
-                startActivity(i);
                 Toast.makeText(DetailActivity.this, R.string.remove_to_favourite, Toast.LENGTH_SHORT).show();
             }
             setFavourite();
         });
+        
         trailerAdapter.setOnTrailerClickListener(url -> {
             Intent intentTrailer = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intentTrailer);
@@ -136,7 +123,7 @@ public class DetailActivity extends AppCompatActivity {
         recyclerViewTrailers.setAdapter(trailerAdapter);
 
         viewModelDet.loadTrailer(Integer.toString(movie.getId()), lang, trailerAdapter);
-        viewModelDet.loadReview(Integer.toString(movie.getId()), "en-US", reviewAdapter);
+        viewModelDet.loadReview(Integer.toString(movie.getId()), langReview, reviewAdapter);
 
         ArrayList<Trailer> trailers = new ArrayList<>();
         ArrayList<Review> reviews = new ArrayList<>();

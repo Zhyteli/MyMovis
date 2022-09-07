@@ -1,17 +1,4 @@
-package com.example.mymovis.presentation;
-
-import static com.example.mymovis.data.MainViewModel.SORT_BY_POPULARITY;
-import static com.example.mymovis.data.MainViewModel.SORT_BY_TOP_RATED;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.loader.app.LoaderManager;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.example.mymovis.presentation.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,38 +10,37 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mymovis.R;
-import com.example.mymovis.adapters.MovieAdapter;
-import com.example.mymovis.data.MainViewModel;
-import com.example.mymovis.data.pojo.Movie;
-import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.example.mymovis.data.viewmodels.MainViewModel;
+import com.example.mymovis.databinding.ActivityMainBinding;
+import com.example.mymovis.domain.Movie;
+import com.example.mymovis.presentation.adapters.MovieAdapter;
 
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private SwitchMaterial switchMaterial;
-    private TextView textViewPopularity, textViewTopRated;
-    private RecyclerView recyclerViewPosters;
     private MovieAdapter movieAdapter;
     private MainViewModel viewModel;
-    private ProgressBar progressBar;
 
-
-    private static final int LOADER_ID = 122;
-    private LoaderManager loaderManager;
+    private ActivityMainBinding binding;
 
     private int page;
     private static String methodOfSort;
-    private static boolean isLoaning = true;
 
     private static String lang;
-
+    private static final String SORT_BY_POPULARITY = "popularity.desc";
+    private static final String SORT_BY_TOP_RATED = "vote_average.desc";
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,44 +75,45 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         lang = Locale.getDefault().getLanguage();
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        recyclerViewPosters = findViewById(R.id.recyclerViewPosters);
-        switchMaterial = findViewById(R.id.switchSort);
-        textViewPopularity = findViewById(R.id.textViewPopularity);
-        textViewTopRated = findViewById(R.id.textViewTopRated);
-        progressBar = findViewById(R.id.progressBarLoading);
         movieAdapter = new MovieAdapter();
-        recyclerViewPosters.setLayoutManager(new GridLayoutManager(this, getColumnCount()));
-        recyclerViewPosters.setAdapter(movieAdapter);
-        switchMaterial.setChecked(true);
+        binding.recyclerViewPosters.setLayoutManager(new GridLayoutManager(this, getColumnCount()));
+        binding.recyclerViewPosters.setAdapter(movieAdapter);
+        binding.switchSort.setChecked(true);
         myOnClick();
 
         LiveData<List<Movie>> moviesFromLiveData = viewModel.getMovies();
-        moviesFromLiveData.observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                movieAdapter.setMovies(movies);
-            }
+        moviesFromLiveData.observe(this,
+                movies -> movieAdapter.setMovies(movies)
+        );
+        viewModel.getErrors().observe(this,
+                throwable -> {
+            Toast.makeText(
+                    MainActivity.this,
+                    "Error" + throwable,
+                    Toast.LENGTH_SHORT).show();
+            viewModel.clearErrors();
         });
 
     }
 
     private void myOnClick() {
-        switchMaterial.setOnCheckedChangeListener((compoundButton, b) -> {
+        binding.switchSort.setOnCheckedChangeListener((compoundButton, b) -> {
             setMethodOfSort(b);
         });
-        switchMaterial.setChecked(false);
+        binding.switchSort.setChecked(false);
 
-        textViewPopularity.setOnClickListener(view -> {
+        binding.textViewPopularity.setOnClickListener(view -> {
             setMethodOfSort(false);
-            switchMaterial.setChecked(false);
+            binding.switchSort.setChecked(false);
         });
-        textViewTopRated.setOnClickListener(view -> {
+        binding.textViewTopRated.setOnClickListener(view -> {
             setMethodOfSort(true);
-            switchMaterial.setChecked(true);
+            binding.switchSort.setChecked(true);
         });
 
         movieAdapter.setOnPosterClickListener(position -> {
@@ -136,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("idIN", Integer.toString(movie.getId()));
             startActivity(intent);
         });
-        recyclerViewPosters.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recyclerViewPosters.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -151,14 +138,12 @@ public class MainActivity extends AppCompatActivity {
     private void setMethodOfSort(boolean b) {
         if (b) {
             methodOfSort = SORT_BY_TOP_RATED;
-            Log.d("setMethodOfSort", methodOfSort);
-            textViewPopularity.setTextColor(getResources().getColor(R.color.white));
-            textViewTopRated.setTextColor(getResources().getColor(R.color.teal_200));
+            binding.textViewPopularity.setTextColor(getResources().getColor(R.color.white));
+            binding.textViewTopRated.setTextColor(getResources().getColor(R.color.teal_200));
         } else {
             methodOfSort = SORT_BY_POPULARITY;
-            Log.d("setMethodOfSort", methodOfSort);
-            textViewPopularity.setTextColor(getResources().getColor(R.color.teal_200));
-            textViewTopRated.setTextColor(getResources().getColor(R.color.white));
+            binding.textViewPopularity.setTextColor(getResources().getColor(R.color.teal_200));
+            binding.textViewTopRated.setTextColor(getResources().getColor(R.color.white));
         }
         if (hasConnection(viewModel.getApplication())){
             viewModel.deleteAllMovies();

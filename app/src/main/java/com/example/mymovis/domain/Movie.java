@@ -1,20 +1,13 @@
-package com.example.mymovis.data.pojo;
-
-import static com.example.mymovis.data.api.ApiFactory.BIG_POSTER_SIZE;
-import static com.example.mymovis.data.api.ApiFactory.SMALL_POSTER_SIZE;
-import static com.example.mymovis.data.api.ApiFactory.BASE_POSTER_URL;
+package com.example.mymovis.domain;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
 
-import com.example.mymovis.data.converters.Converter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Entity(tableName = "movies")
-@TypeConverters(value = Converter.class)
 public class Movie {
     @PrimaryKey(autoGenerate = true)
     private int uniqueId;
@@ -66,6 +59,7 @@ public class Movie {
         this.voteAverage = voteAverage;
         this.releaseDate = releaseDate;
     }
+
     @Ignore
     public Movie(int id, int voteCount, String title, String originalTitle, String overview, String posterPath, String bigPosterPath, String backdropPath, double voteAverage, String releaseDate) {
         this.id = id;

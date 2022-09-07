@@ -16,13 +16,13 @@
         android:theme="@style/Theme.MyMovis"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.FavouriteActivity"
+            android:name=".presentation.activity.FavouriteActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.DetailActivity"
+            android:name=".presentation.activity.DetailActivity"
             android:exported="false" />
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

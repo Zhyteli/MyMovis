@@ -1,8 +1,6 @@
 package com.example.mymovis.data.api;
 
-import com.example.mymovis.data.pojo.Review;
 import com.example.mymovis.data.pojo.ReviewResponse;
-import com.example.mymovis.data.pojo.Trailer;
 import com.example.mymovis.data.pojo.MovieResponse;
 import com.example.mymovis.data.pojo.TrailerResponse;
 

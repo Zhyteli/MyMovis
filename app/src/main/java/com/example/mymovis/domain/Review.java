@@ -1,4 +1,4 @@
-package com.example.mymovis.data.pojo;
+package com.example.mymovis.domain;
 
 public class Review {
     private String author;

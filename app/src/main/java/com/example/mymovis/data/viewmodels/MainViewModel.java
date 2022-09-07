@@ -1,4 +1,4 @@
-package com.example.mymovis.data;
+package com.example.mymovis.data.viewmodels;
 
 import android.app.Application;
 import android.os.AsyncTask;
@@ -10,12 +10,13 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.mymovis.data.MovieDatabase;
 import com.example.mymovis.data.api.ApiFactory;
 import com.example.mymovis.data.api.ApiService;
-import com.example.mymovis.data.pojo.Movie;
+import com.example.mymovis.domain.Movie;
 import com.example.mymovis.data.pojo.MovieResponse;
+import com.example.mymovis.domain.FavouriteMovie;
 
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -28,18 +29,11 @@ import io.reactivex.schedulers.Schedulers;
 public class MainViewModel extends AndroidViewModel {
 
     private static MovieDatabase database;
-    private LiveData<List<Movie>> movies;
-    private LiveData<List<FavouriteMovie>> favouriteMovies;
-    private LiveData<String> methodOfSort;
-    private CompositeDisposable compositeDisposable;
+    private final LiveData<List<Movie>> movies;
+    private final LiveData<List<FavouriteMovie>> favouriteMovies;
     private MutableLiveData<Throwable> errors;
-    public static final String SMALL_POSTER_SIZE = "w185";
-    private static final String KEY_POSTER_PATH = "poster_path";
-    public static final String SORT_BY_POPULARITY = "popularity.desc";
-    public static final String SORT_BY_TOP_RATED = "vote_average.desc";
-    public static final int POPULARITY = 0;
-    public static final int TOP_RATED = 1;
-    int mPage;
+
+    private CompositeDisposable compositeDisposable;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -61,39 +55,26 @@ public class MainViewModel extends AndroidViewModel {
         ApiFactory apiFactory = ApiFactory.getInstance();
         ApiService apiService = apiFactory.getApiService();
         compositeDisposable = new CompositeDisposable();
-        Disposable disposable = apiService.getMovieResponse("32f91e104228c0c9ff3630899838e82e",
-                        lang,
-                        sort,
-                        "1000",
-                        Integer.toString(page))
+        String key = "32f91e104228c0c9ff3630899838e82e";
+        String minVoteCountValue = "1000";
+        Disposable disposable = apiService.getMovieResponse(key, lang, sort, minVoteCountValue, Integer.toString(page))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<MovieResponse>() {
-                    @Override
-                    public void accept(MovieResponse movieResponse) throws Exception {
-                        insertMovie(movieResponse.getMovies());
-                        Log.d("accept", Integer.toString(page));
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        errors.setValue(throwable);
-                    }
-                });
+                .subscribe(
+                        movieResponse -> insertMovie(movieResponse.getMovies()),
+                        throwable -> errors.setValue(throwable)
+                );
         compositeDisposable.add(disposable);
     }
 
     public void nextPage(String mLang, String mSort, int mPage) {
         loadData(mLang, mSort, mPage);
-        Log.d("nextPage", Integer.toString(mPage));
     }
 
     public Movie getMovieById(int id) {
         try {
             return new GetMovieTask().execute(id).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
@@ -102,9 +83,7 @@ public class MainViewModel extends AndroidViewModel {
     public FavouriteMovie getFavouriteMovieById(int id) {
         try {
             return new GetFavouriteMovieTask().execute(id).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
         return null;
@@ -139,7 +118,6 @@ public class MainViewModel extends AndroidViewModel {
         new DeleteFavouriteTask().execute(movie);
     }
 
-
     private static class DeleteFavouriteTask extends AsyncTask<FavouriteMovie, Void, Void> {
         @Override
         protected Void doInBackground(FavouriteMovie... movies) {
@@ -149,7 +127,6 @@ public class MainViewModel extends AndroidViewModel {
             return null;
         }
     }
-
     private static class InsertFavouriteTask extends AsyncTask<FavouriteMovie, Void, Void> {
         @Override
         protected Void doInBackground(FavouriteMovie... movies) {

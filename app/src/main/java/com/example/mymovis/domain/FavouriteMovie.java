@@ -1,9 +1,7 @@
-package com.example.mymovis.data;
+package com.example.mymovis.domain;
 
 import androidx.room.Entity;
 import androidx.room.Ignore;
-
-import com.example.mymovis.data.pojo.Movie;
 
 @Entity(tableName = "favourite_movies")
 public class FavouriteMovie extends Movie {

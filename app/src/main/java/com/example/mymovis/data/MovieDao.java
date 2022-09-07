@@ -7,7 +7,8 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.mymovis.data.pojo.Movie;
+import com.example.mymovis.domain.Movie;
+import com.example.mymovis.domain.FavouriteMovie;
 
 import java.util.List;
 

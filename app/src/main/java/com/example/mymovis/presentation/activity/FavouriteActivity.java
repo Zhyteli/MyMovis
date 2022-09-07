@@ -1,4 +1,4 @@
-package com.example.mymovis.presentation;
+package com.example.mymovis.presentation.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,16 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.mymovis.R;
-import com.example.mymovis.adapters.MovieAdapter;
-import com.example.mymovis.data.FavouriteMovie;
-import com.example.mymovis.data.MainViewModel;
-import com.example.mymovis.data.pojo.Movie;
+import com.example.mymovis.presentation.adapters.MovieAdapter;
+import com.example.mymovis.domain.FavouriteMovie;
+import com.example.mymovis.data.viewmodels.MainViewModel;
+import com.example.mymovis.domain.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,25 +61,19 @@ public class FavouriteActivity extends AppCompatActivity {
         recyclerViewFavouriteMovies.setAdapter(adapter);
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         LiveData<List<FavouriteMovie>> favouriteModels = viewModel.getFavouriteMovies();
-        favouriteModels.observe(this, new Observer<List<FavouriteMovie>>() {
-            @Override
-            public void onChanged(List<FavouriteMovie> favouriteMovies) {
-                List<Movie> movies = new ArrayList<>();
-                if (favouriteModels != null) {
-                    movies.addAll(favouriteMovies);
-                    adapter.setMovies(movies);
-                }
+        favouriteModels.observe(this, favouriteMovies -> {
+            List<Movie> movies = new ArrayList<>();
+            if (favouriteModels != null) {
+                movies.addAll(favouriteMovies);
+                adapter.setMovies(movies);
             }
         });
 
-        adapter.setOnPosterClickListener(new MovieAdapter.OnPosterClickListener() {
-            @Override
-            public void OnPosterClick(int position) {
-                Movie movie = adapter.getMovies().get(position);
-                Intent intent = new Intent(FavouriteActivity.this, DetailActivity.class);
-                intent.putExtra("id",movie.getId());
-                startActivity(intent);
-            }
+        adapter.setOnPosterClickListener(position -> {
+            Movie movie = adapter.getMovies().get(position);
+            Intent intent = new Intent(FavouriteActivity.this, DetailActivity.class);
+            intent.putExtra("id",movie.getId());
+            startActivity(intent);
         });
     }
 }

@@ -7,8 +7,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.mymovis.data.pojo.Movie;
-
+import com.example.mymovis.domain.Movie;
+import com.example.mymovis.domain.FavouriteMovie;
 
 @Database(entities = {Movie.class, FavouriteMovie.class}, version = 5, exportSchema = false)
 public abstract class MovieDatabase extends RoomDatabase {
