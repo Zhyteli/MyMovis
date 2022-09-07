@@ -105,7 +105,7 @@ public class Movie {
     }
 
     public String getBigPosterPath() {
-        return BASE_POSTER_URL + BIG_POSTER_SIZE + posterPath;
+        return bigPosterPath;
     }
 
     public void setBigPosterPath(String bigPosterPath) {
@@ -153,7 +153,7 @@ public class Movie {
     }
 
     public String getPosterPath() {
-        return BASE_POSTER_URL + SMALL_POSTER_SIZE + posterPath;
+        return posterPath;
     }
 
     public void setPosterPath(String posterPath) {

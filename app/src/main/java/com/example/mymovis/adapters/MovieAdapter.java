@@ -1,5 +1,8 @@
 package com.example.mymovis.adapters;
 
+import static com.example.mymovis.data.api.ApiFactory.BASE_POSTER_URL;
+import static com.example.mymovis.data.api.ApiFactory.SMALL_POSTER_SIZE;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +55,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             onReachEndListener.onReachEnd();
         }
         Movie movie = movies.get(position);
-        Picasso.get().load(movie.getPosterPath()).into(holder.imageViewSmallPoster);
+        Picasso.get().load(BASE_POSTER_URL + SMALL_POSTER_SIZE + movie.getPosterPath()).into(holder.imageViewSmallPoster);
     }
 
     @Override

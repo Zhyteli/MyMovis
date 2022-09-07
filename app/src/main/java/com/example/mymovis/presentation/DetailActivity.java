@@ -1,5 +1,8 @@
 package com.example.mymovis.presentation;
 
+import static com.example.mymovis.data.api.ApiFactory.BASE_POSTER_URL;
+import static com.example.mymovis.data.api.ApiFactory.BIG_POSTER_SIZE;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -100,7 +103,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         movie = viewModel.getMovieById(id);
-        Picasso.get().load(movie.getBigPosterPath()).placeholder(android.R.drawable.progress_indeterminate_horizontal).into(imageViewBigPoster);
+        Picasso.get().load(BASE_POSTER_URL + BIG_POSTER_SIZE + movie.getPosterPath()).placeholder(android.R.drawable.progress_indeterminate_horizontal).into(imageViewBigPoster);
         textViewTitle.setText(movie.getTitle());
         textViewOriginalTitle.setText(movie.getOriginalTitle());
         textViewReleaseDate.setText(movie.getReleaseDate());
